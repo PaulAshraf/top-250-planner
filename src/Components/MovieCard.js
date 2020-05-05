@@ -10,8 +10,8 @@ function MovieCard(props) {
     const seen = props.seen
 
     return (
-        <div key={movie.index}>
-        <Card >
+        <Outer key={movie.index}>
+        <Card interactive={true} elevation={Elevation.FOUR}>
           <MovieContainer backdrop={'https://image.tmdb.org/t/p/w300/' + movie.backdrop_path}>
             {/* <MoviePoster>
               <img src={movie.smallPosterLink} alt={movie.title} />
@@ -40,9 +40,13 @@ function MovieCard(props) {
             {/* </MovieInfo> */}
           </MovieContainer>
         </Card>
-      </div>
+      </Outer>
     )
 }
+
+const Outer = styled.div`
+
+`
 
 
 const MovieContainer = styled.div.attrs(props => ({
@@ -53,8 +57,7 @@ const MovieContainer = styled.div.attrs(props => ({
 }))`
   display: flex;
   flex-direction: column ;
-  width: 400px;
-  height: 100px;
+  width: 300px;
   flex-basis: 33%;
 `;
 
