@@ -1,15 +1,15 @@
-import React,{ useState} from 'react'
+import React from 'react'
 import styled, {keyframes} from "styled-components";
 import { Button, Slider } from "@blueprintjs/core";
 
 
-function Welcome() {
+function Welcome(props) {
 
-    const [months, setMonths] = useState(1);
+    const months = props.months
+    const changeMonths = props.changeMonths
+    const handleClick = props.handleClick
 
-    function changeMonths(value) {
-        setMonths(value)
-    }
+   
 
     function labelRenderer(value){
         if(value === 1) return `${value} month` 
@@ -34,7 +34,7 @@ function Welcome() {
                     />
                 </SliderContainer>
                 <br />
-            <Button large>GO!</Button>
+            <Button large onClick={() => handleClick()}>GO!</Button>
         </Container>
         </FloatingPosters10></FloatingPosters9></FloatingPosters8></FloatingPosters7></FloatingPosters6>
         </FloatingPosters5></FloatingPosters4></FloatingPosters3></FloatingPosters2></FloatingPosters1></FloatingPosters0>
@@ -56,6 +56,8 @@ font-size: calc(10px + 2vmin);
 color: white;
 backdrop-filter: blur(8px);
 `
+
+
 const moveIt0 = keyframes`
 from {background-position: 0 bottom;}
 to {background-position: left 0 top -300px;}

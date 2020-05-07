@@ -1,25 +1,24 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from "styled-components";
 
-import { Button, Card, Elevation } from "@blueprintjs/core";
+import { Button, ButtonGroup, Card, Elevation, Overlay, Classes, Dialog } from "@blueprintjs/core";
 
 
 function MovieCard(props) {
+
+  const [open, setOpen] = useState(false);
+
 
     const movie = props.movie
     const seen = props.seen
 
     return (
         <Outer key={movie.index}>
-        <Card interactive={true} elevation={Elevation.FOUR}>
+        <Card style={{padding: 0}} interactive={true} elevation={Elevation.FOUR} onClick={() => setOpen(!open)}>
           <MovieContainer backdrop={'https://image.tmdb.org/t/p/w300/' + movie.backdrop_path}>
-            {/* <MoviePoster>
-              <img src={movie.smallPosterLink} alt={movie.title} />
-            </MoviePoster> */}
-            {/* <MovieInfo> */}
+            
               <h2 style={{color: 'white'}}>{"#" + (parseInt(movie.index) + 1) + ": " + movie.title}</h2>
-              {/* <p>{movie.overview}</p> */}
-              <Buttons>
+              <ButtonGroup fill>
                 <Button
                   intent="danger"
                   disabled={movie.ytLink === "NA"}
@@ -36,16 +35,27 @@ function MovieCard(props) {
                   onClick={() => seen(movie)}
                 >
                   Seen</Button>
-              </Buttons>
-            {/* </MovieInfo> */}
+              </ButtonGroup>
           </MovieContainer>
         </Card>
+        <Dialog isOpen={open}  onClose={() => setOpen(!open)} icon="film" title={movie.title}>
+              <InfoPane className={Classes.DIALOG_BODY}>
+              <MoviePoster>
+                <br />
+                  <img width='100px' src={'https://image.tmdb.org/t/p/w300/' + movie.poster_path} alt={movie.title}/>
+              </MoviePoster>
+              <MovieInfo>
+                  <h1 >{movie.title}</h1>
+                  <p >{movie.overview}</p>
+              </MovieInfo>
+              </InfoPane>
+            </Dialog>
       </Outer>
     )
 }
 
 const Outer = styled.div`
-
+margin: 20px;
 `
 
 
@@ -59,18 +69,26 @@ const MovieContainer = styled.div.attrs(props => ({
   flex-direction: column ;
   width: 300px;
   flex-basis: 33%;
+  width: 400px; 
+  height: 150px;
+`;
+
+const InfoPane = styled.div`
+  display: flex;
+  flex-direction: row ;
+
 `;
 
 const MoviePoster = styled.div`
   flex-basis: 20%;
+  padding: 5px;
 `;
 
 const MovieInfo = styled.div`
   flex-basis: 80%;
 `;
-const Buttons = styled.div`
-  display: flex;
-`;
+
+
 const ButtonLink = styled.a`
   text-decoration: none;
 `;

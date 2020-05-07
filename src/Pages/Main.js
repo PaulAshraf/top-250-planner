@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import MovieCard from '../Components/MovieCard'
+import { Button } from "@blueprintjs/core";
+
 
 import list from "../list.json";
 import "../App.css";
 
-function Main() {
+function Main(props) {
+const months = props.months
+
   const [movieList, setMovieList] = useState(list.notseen.slice());
   const [movieListSeen, setMovieListSeen] = useState(list.seen.slice());
-  const [num, setNum] = useState(1);
 
   function reshape(num) {
 
@@ -27,7 +30,7 @@ function seen(movie) {
     )
   );
   setMovieListSeen(movieListSeen.concat([movie]));
-  console.log()
+  console.log(movieListSeen)
 }
 
 function shuffleMovies(movieList) {
@@ -37,29 +40,21 @@ function shuffleMovies(movieList) {
   }
   return movieList.slice();
 }
+
+useEffect(() => {
+  let num = Math.ceil((250 - movieListSeen.length) / (30 * months))
+  setMovieList(reshape(num));
+  }, [movieListSeen, months])
   
   return (
     <div>
-      <h1>
-        I want to finish IMDB's Top 250 movies in
-        <input
-          className="months"
-          type="number"
-          id="months"
-          min="1"
-          onChange={(e) => {
-            setNum(Math.ceil((250 - movieListSeen.length) / (30 * e.target.value)));
-            setMovieList(reshape(num));
-          }}
-        ></input>
-        months
-      </h1>
-      <button onClick={() => setMovieList(shuffleMovies(movieList))}>
+
+      <Button onClick={() => setMovieList(shuffleMovies(movieList))}>
         Shuffle Order
-      </button>
-      <button onClick={() => setMovieList(list.notseen.slice())}>
+      </Button>
+      <Button onClick={() => setMovieList(list.notseen.slice())}>
         Order by rating
-      </button>
+      </Button>
       <br /> <br />
       {movieList.map((movieGroup, i) => {
           
@@ -75,12 +70,12 @@ function shuffleMovies(movieList) {
 
         return (
           <div>
-            <h3>{dd + "/" + mm + "/" + yyyy}</h3>
+            <DateStyle>{dd + "/" + mm + "/" + yyyy}</DateStyle>
 
             <Container key={i}>
               {movieGroup.map((movie) => {
                 return (
-                  <MovieCard key={movie.index} movie={movie} seen={seen} />
+                  <MovieCard key={movie.index} movie={movie} seen={seen}/>
                 );
               })}
             </Container>
@@ -104,6 +99,10 @@ const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
+
+const DateStyle = styled.h2`
+  color: white;
+`
 
 
 
