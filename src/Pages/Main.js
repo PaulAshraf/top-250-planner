@@ -17,18 +17,26 @@ const months = props.months
   function reshape(num) {
 
   let reShapedMovieList = [];
-  let originalArr = list.notseen.slice();
+  let originalArr = movieList.flat().slice();
   while (originalArr.length) reShapedMovieList.push(originalArr.splice(0, num));
   return reShapedMovieList
 
 }
 
 function seen(movie) {
-  setMovieList(
-    movieList.filter(
+  
+  
+  let arr = movieList.slice()
+
+  arr.forEach((movieGroup, i) => {
+    let newMovieGroup = movieGroup.filter(
       (item) => item.index !== movie.index
-    )
-  );
+    );
+    arr[i] = newMovieGroup
+  });
+
+  setMovieList(arr);
+
   setMovieListSeen(movieListSeen.concat([movie]));
   console.log(movieListSeen)
 }

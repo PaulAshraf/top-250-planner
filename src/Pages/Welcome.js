@@ -26,7 +26,7 @@ function Welcome(props) {
                         min={1}
                         max={12}
                         stepSize={1}
-                        labelStepSize={11}
+                        labelStepSize={3}
                         showTrackFill={true}
                         value={months}
                         onChange={changeMonths}
@@ -54,8 +54,8 @@ align-items: center;
 justify-content: center;
 font-size: calc(10px + 2vmin); 
 color: white;
-backdrop-filter: blur(8px);
 `
+// backdrop-filter: blur(2px);
 
 
 const moveIt0 = keyframes`

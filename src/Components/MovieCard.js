@@ -1,13 +1,15 @@
 import React, {useState} from 'react'
 import styled from "styled-components";
 
-import { Button, ButtonGroup, Card, Elevation, Overlay, Classes, Dialog } from "@blueprintjs/core";
+import green from '../green.png';
+
+import { Button, ButtonGroup, Card, Elevation, Classes, Dialog } from "@blueprintjs/core";
+
 
 
 function MovieCard(props) {
 
-  const [open, setOpen] = useState(false);
-
+    const [open, setOpen] = useState(false);
 
     const movie = props.movie
     const seen = props.seen
@@ -18,6 +20,8 @@ function MovieCard(props) {
           <MovieContainer backdrop={'https://image.tmdb.org/t/p/w300/' + movie.backdrop_path}>
             
               <h2 style={{color: 'white'}}>{"#" + (parseInt(movie.index) + 1) + ": " + movie.title}</h2>
+          </MovieContainer>
+        </Card>
               <ButtonGroup fill>
                 <Button
                   intent="danger"
@@ -36,8 +40,6 @@ function MovieCard(props) {
                 >
                   Seen</Button>
               </ButtonGroup>
-          </MovieContainer>
-        </Card>
         <Dialog isOpen={open}  onClose={() => setOpen(!open)} icon="film" title={movie.title}>
               <InfoPane className={Classes.DIALOG_BODY}>
               <MoviePoster>
@@ -62,7 +64,7 @@ margin: 20px;
 const MovieContainer = styled.div.attrs(props => ({
     style: {
         backgroundSize: 'cover',
-        backgroundImage: `url(${props.backdrop})`,
+        backgroundImage: props.seen?`url(${green}), url(${props.backdrop})`:`url(${props.backdrop})`,
     },
 }))`
   display: flex;
