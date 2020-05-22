@@ -64,7 +64,7 @@ function Welcome(props) {
 }
 
 const BarContainer = styled.div`
-width: 30%;
+width: 25%;
 `
 
 const SliderContainer = styled.div`
@@ -79,8 +79,8 @@ align-items: center;
 justify-content: center;
 font-size: calc(10px + 2vmin); 
 color: white;
+backdrop-filter: blur(4px);
 `
-// backdrop-filter: blur(2px);
 
 
 const moveIt0 = keyframes`
