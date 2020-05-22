@@ -4,16 +4,18 @@ import './App.css';
 import Main from './Pages/Main'
 import Welcome from './Pages/Welcome'
 
-import list250 from "./list.json";
-
 import axios from 'axios'
 import cheerio from 'cheerio'
+
+import list250 from "./list.json";
+
 
 function App() {
 
   const [months, setMonths] = useState(1);
   const [clicked, setClicked] = useState(false);
   const [listSelected, setListSelected] = useState('250')
+  const [listObj, setListObj] = useState(list250)
 
   const [bar,setBar] = useState(false)
   const [prog,setProg] = useState(0)
@@ -26,69 +28,60 @@ function handleClick(){
   setClicked(true)
 }
 
-async function scrape(link){
-  let header = {
-    "X-Requested-With": "axios",
-    "Origin":"http://localhost:3000/"
-  }
-  axios.get('https://cors-anywhere.herokuapp.com/' + link, header).then(function(html){
-      let $ = cheerio.load(html, {});
-      let list = {notseen: [], seen:[]};
-      $('.seen-collection').filter(async function(){
-        console.log('0')
+function handleBar(){
+  setBar(true)
+}
 
+
+
+async function scrape(link){
+      let html = await axios.get('https://mycorsbypass.herokuapp.com/' + encodeURIComponent(link))
+      let $ = cheerio.load(html.data, {});
+      let list = {notseen: [], seen:[]};
+      $('.seen-collection').filter(function(){
         let tableRow = $(this).find('.lister-list').find('tr');
-        let i = 0;
-        tableRow.each(async function(){
-          let self = $(this);
-          i += 1;
+        tableRow.each(async function(i){
+          let self = $(this);          
           let smallPosterLink = self.find('.posterColumn').find('a').find('img').attr('src');
           let imdbLink = self.find('.titleColumn').find('a').attr('href');
           let id  = imdbLink.split('/')[2]
-          let info = await getInfo(id)
-          console.log(info)
+         
+          let apiKey = process.env.REACT_APP_TMDB_API_KEY
+          let url1 = 'https://api.themoviedb.org/3/find/'+id+'?api_key='+apiKey+'&language=en-US&external_source=imdb_id'
+          let res1 = await axios.get(url1)
+          let info = res1.data.movie_results[0]
+         
+          let url2 = 'https://api.themoviedb.org/3/movie/'+info.id+'/videos?api_key='+apiKey+'&language=en-US'
+          let res2 = await axios.get(url2)
+          
+          if (res2.data.results[0])
+            info.ytLink = 'https://www.youtube.com/watch?v=' + res2.data.results[0]['key']
+          else
+            info.ytLink = 'NA'
           info.imdbLink = imdbLink
           info.smallPosterLink = smallPosterLink
-          info.index = i
+          info.index = i 
           list.notseen.push(info)
+          console.log(i / tableRow.length)
+          setProg(i / tableRow.length)
         })
       })
+      console.log('DONE')
+      // setBar(false)
       return list
-  }).catch(function(error){
-    return {error: 'error in scrapping', errorStage:0}
-  })
+  
 }
 
-function getInfo(id){
-  console.log('1')
-  let apiKey = process.env.REACT_APP_TMDB_API_KEY
-  let url1 = 'https://api.themoviedb.org/3/find/'+id+'?api_key='+apiKey+'&language=en-US&external_source=imdb_id'
-  axios.get(url1).then(function(body){
-    console.log('here')
-    let res = JSON.parse(body).movie_results[0]
-    let url2 = 'https://api.themoviedb.org/3/movie/'+res.id+'/videos?api_key='+apiKey+'&language=en-US'
-    axios.get(url2).then(function(body){
-        console.log(body)
-        if (JSON.parse(body).results[0])
-          res.ytLink = 'https://www.youtube.com/watch?v=' + JSON.parse(body).results[0]['key']
-        else
-          res.ytLink = 'NA'
-        console.log(res)
-        return res
-    }).catch(function (error){
-      return {error: 'error in TMDB youtube request',errorStage:2}
-    }) 
-  }).catch(function (error) {
-    return {error: 'error in TMDB request', errorStage:1}
-  })
-}
 
-function selectList(l){
+async function selectList(l){
   setBar(true)
   if(l === '250')
-    setListSelected(list250)
-  if(l === '100')
-    setListSelected(scrape('https://www.imdb.com/chart/moviemeter/'))
+    setListObj(list250)
+  if(l === '100'){
+    let newList = await scrape('https://www.imdb.com/chart/moviemeter/')
+    setListObj(newList)
+    // setBar(false) 
+  }
   else
     setListSelected(scrape(l))
 }
@@ -96,9 +89,9 @@ function selectList(l){
   return (
     <div className="App">
       {!clicked?
-      <Welcome changeMonths={changeMonths} months={months} handleClick={handleClick} selectList={selectList}/>
+      <Welcome changeMonths={changeMonths} months={months} handleClick={handleClick} selectList={selectList} bar={bar} prog={prog} handleBar={handleBar}/>
       :
-      <Main months={months} listSelected={listSelected}/>
+      <Main months={months} listSelected={listObj}/>
       }
     </div>
   );

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled, {keyframes} from "styled-components";
-import { Button, Slider, ButtonGroup } from "@blueprintjs/core";
+import { Button, Slider, ButtonGroup, ProgressBar } from "@blueprintjs/core";
 
 
 function Welcome(props) {
@@ -10,6 +10,17 @@ function Welcome(props) {
     const handleClick = props.handleClick
     const selectList = props.selectList
 
+    const bar = props.bar
+    const prog = props.prog
+    const handleBar = props.handleBar
+
+    const [curr, setCurr] = useState(250)
+
+    function changeList(list){
+        handleBar(true)
+        selectList(list)
+        setCurr(parseInt(list))
+    }
    
 
     function labelRenderer(value){
@@ -21,11 +32,16 @@ function Welcome(props) {
         <FloatingPosters0><FloatingPosters1><FloatingPosters2><FloatingPosters3><FloatingPosters4><FloatingPosters5>
          <FloatingPosters6><FloatingPosters7><FloatingPosters8><FloatingPosters9><FloatingPosters10>
         <Container>
+            {console.log(bar)}
+            <BarContainer>{bar?<ProgressBar intent='success' value={prog} />:<></>}</BarContainer>
+            <br />
             <ButtonGroup>
-                <Button large icon="glass" onClick={() => selectList('250')}>Top 250</Button>
-                <Button large icon="timeline-line-chart" onClick={() => selectList('100')}>Hottest 100</Button>
+
+                <Button active={curr===250} large icon="glass" onClick={() => changeList('250')}><strong>Top 250</strong></Button>
+                <Button active={curr===100}large icon="timeline-line-chart" onClick={() => changeList('100')}><strong>Hottest 100</strong></Button>
+                <Button active={curr!==250&&curr!==100} large icon="edit" onClick={() => changeList('0')}><strong>Your Own List</strong></Button>
             </ButtonGroup>
-            <h1> {months === 1? `Finish IMDb's Top 250 in ${months} month.` : `Finish IMDb's Top 250 in ${months} months.` } </h1>
+            <h1> {months === 1? `Finish IMDb's ${curr===250?'Top':'Hottest'} ${curr} in ${months} month.` : `Finish IMDB's ${curr===250?'Top':'Hottest'} ${curr} in ${months} months.` } </h1>
                 <SliderContainer>
                     <Slider 
                         min={1}
@@ -39,13 +55,17 @@ function Welcome(props) {
                     />
                 </SliderContainer>
                 <br />
-            <Button large onClick={() => handleClick()}>GO!</Button>
+            <Button large onClick={() => handleClick()}><strong>GO!</strong></Button>
         </Container>
         </FloatingPosters10></FloatingPosters9></FloatingPosters8></FloatingPosters7></FloatingPosters6>
         </FloatingPosters5></FloatingPosters4></FloatingPosters3></FloatingPosters2></FloatingPosters1></FloatingPosters0>
         
     )
 }
+
+const BarContainer = styled.div`
+width: 30%;
+`
 
 const SliderContainer = styled.div`
 width: 70%
