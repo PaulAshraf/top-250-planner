@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, {keyframes} from "styled-components";
-import { Button, Slider } from "@blueprintjs/core";
+import { Button, Slider, ButtonGroup } from "@blueprintjs/core";
 
 
 function Welcome(props) {
@@ -8,6 +8,7 @@ function Welcome(props) {
     const months = props.months
     const changeMonths = props.changeMonths
     const handleClick = props.handleClick
+    const selectList = props.selectList
 
    
 
@@ -20,6 +21,10 @@ function Welcome(props) {
         <FloatingPosters0><FloatingPosters1><FloatingPosters2><FloatingPosters3><FloatingPosters4><FloatingPosters5>
          <FloatingPosters6><FloatingPosters7><FloatingPosters8><FloatingPosters9><FloatingPosters10>
         <Container>
+            <ButtonGroup>
+                <Button large icon="glass" onClick={() => selectList('250')}>Top 250</Button>
+                <Button large icon="timeline-line-chart" onClick={() => selectList('100')}>Hottest 100</Button>
+            </ButtonGroup>
             <h1> {months === 1? `Finish IMDb's Top 250 in ${months} month.` : `Finish IMDb's Top 250 in ${months} months.` } </h1>
                 <SliderContainer>
                     <Slider 

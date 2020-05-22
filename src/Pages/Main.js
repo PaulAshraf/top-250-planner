@@ -4,12 +4,12 @@ import styled from "styled-components";
 import MovieCard from '../Components/MovieCard'
 import { Button } from "@blueprintjs/core";
 
-
-import list from "../list.json";
 import "../App.css";
 
 function Main(props) {
-const months = props.months
+  
+  const list = props.listSelected
+  const months = props.months
 
   const [movieList, setMovieList] = useState(list.notseen.slice());
   const [movieListSeen, setMovieListSeen] = useState(list.seen.slice());
